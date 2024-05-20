@@ -9,7 +9,7 @@
 ### 文件结构：
 
 - img文件夹：用于存放图片
-- cmd.xlsx：用于配置操作脚本
+- orange.xlsx：用于配置操作脚本
 - KeyMouse.py 或者 KeyMouse.exe：主文件
 
 ### 如何运行:双击启动exe/运行以下代码
@@ -17,6 +17,8 @@
 ```py
 python KeyMouse.py
 ```
+
+注意：
 
 ## 其他
 
