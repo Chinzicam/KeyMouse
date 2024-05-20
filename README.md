@@ -35,6 +35,6 @@ python KeyMouse.py
 ### 使用 PyInstaller 打包脚本
 
 ```py
-pyinstaller --onefile --windowed KeyMouse.py
+pyinstaller --onefile KeyMouse.py
 ```
 
