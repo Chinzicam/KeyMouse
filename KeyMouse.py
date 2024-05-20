@@ -1,18 +1,27 @@
-import pyautogui
-import time
-import openpyxl
-import pyperclip
-import os  # 确保导入 os 模块
+import pyautogui  # 导入 pyautogui 库，用于模拟鼠标和键盘操作
+import time  # 导入 time 库，用于控制时间延迟
+import openpyxl  # 导入 openpyxl 库，用于读取和写入 Excel 文件
+import pyperclip  # 导入 pyperclip 库，用于操作剪贴板
+import os  # 导入 os 库，用于文件和操作系统的交互
 
-# 定义鼠标事件
+
+# 设置默认等待时间
+timeDelay = 1
+
+# 定义鼠标事件函数
 def mouseClick(clickTimes, lOrR, img, reTry):
+    # 检查图像文件是否存在
     if not os.path.exists(img):
         print(f"文件 {img} 不存在，跳过该步骤")
         return
+    
+    # 根据 reTry 参数的值决定不同的重试逻辑
     if reTry == 1:
         while True:
+            # 尝试找到屏幕上的图像位置
             location = pyautogui.locateCenterOnScreen(img, confidence=0.9)
             if location is not None:
+                # 在找到的位置进行鼠标点击操作
                 pyautogui.click(location.x, location.y, clicks=clickTimes, interval=0.2, duration=0.2, button=lOrR)
                 break
             print("未找到匹配图片,0.1秒后重试")
@@ -33,7 +42,7 @@ def mouseClick(clickTimes, lOrR, img, reTry):
                 i += 1
             time.sleep(0.1)
 
-# 数据检查
+# 数据检查函数，确保 Excel 中的数据有效
 def dataCheck(sheet):
     checkCmd = True
     if sheet.max_row < 2:
@@ -41,22 +50,22 @@ def dataCheck(sheet):
         checkCmd = False
     for i in range(2, sheet.max_row + 1):
         cmdType = sheet.cell(row=i, column=1).value
-        if cmdType not in [1, 2, 3, 4, 5, 6, 7]:
+        if cmdType not in [1, 2, 3, 4, 5, 6, 7, 8]:  # 确保操作类型在允许的范围内
             print(f'第{i}行,第1列数据有毛病')
             checkCmd = False
         cmdValue = sheet.cell(row=i, column=2).value
-        if cmdType in [1, 2, 3, 7] and not isinstance(cmdValue, str):
+        if cmdType in [1, 2, 3, 7, 8] and not isinstance(cmdValue, str):  # 确保特定类型的值是字符串
             print(f'第{i}行,第2列数据有毛病')
             checkCmd = False
-        if cmdType == 4 and not cmdValue:
+        if cmdType == 4 and not cmdValue:  # 确保类型4的值非空
             print(f'第{i}行,第2列数据有毛病')
             checkCmd = False
-        if cmdType in [5, 6] and not isinstance(cmdValue, (int, float)):
+        if cmdType in [5, 6] and not isinstance(cmdValue, (int, float)):  # 确保特定类型的值是数字
             print(f'第{i}行,第2列数据有毛病')
             checkCmd = False
     return checkCmd
 
-# 执行任务
+# 主函数，执行从 Excel 中读取的任务
 def mainWork(sheet):
     for i in range(2, sheet.max_row + 1):
         cmdType = sheet.cell(row=i, column=1).value
@@ -100,20 +109,25 @@ def mainWork(sheet):
                 pyautogui.click(location.x, location.y)
             else:
                 print(f"图片 {img} 不存在，跳过此步骤")
+        elif cmdType == 8:
+            keys = sheet.cell(row=i, column=2).value.split('+')
+            pyautogui.hotkey(*keys)
+            print("按键组合:", '+'.join(keys))
+        time.sleep(timeDelay)  # 添加默认等待时间
 
 if __name__ == '__main__':
-    file = 'cmd.xlsx'
-    wb = openpyxl.load_workbook(filename=file)
-    sheet = wb.active
+    file = 'cmd.xlsx'  # 定义 Excel 文件名
+    wb = openpyxl.load_workbook(filename=file)  # 加载 Excel 工作簿
+    sheet = wb.active  # 获取活动工作表
     print('欢迎使用橙子草的Python自动化脚本~')
-    checkCmd = dataCheck(sheet)
+    checkCmd = dataCheck(sheet)  # 检查数据有效性
     if checkCmd:
         key = input('选择功能: 1.做一次 2.循环到死 \n')
         if key == '1':
-            mainWork(sheet)
+            mainWork(sheet)  # 执行一次
         elif key == '2':
             while True:
-                mainWork(sheet)
+                mainWork(sheet)  # 不断循环执行
                 time.sleep(0.1)
                 print("等待0.1秒")
     else:
