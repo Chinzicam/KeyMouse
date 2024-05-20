@@ -5,6 +5,36 @@ import pyperclip  # 导入 pyperclip 库，用于操作剪贴板
 import os  # 导入 os 库，用于文件和操作系统的交互
 import configparser  # 导入 configparser 库，用于读取配置文件
 
+# 创建默认的 keyMouse.ini 配置文件
+def create_default_ini():
+    config = configparser.ConfigParser()
+    config['Settings'] = {
+        'timeDelay': '1',
+        'executionMode': '2',
+        'loopCount': '2'
+    }
+    with open('keyMouse.ini', 'w', encoding='utf-8') as configfile:
+        config.write(configfile)
+
+# 创建默认的 orange.xlsx 文件
+def create_default_excel():
+    wb = openpyxl.Workbook()
+    sheet = wb.active
+    sheet.append(['欢迎使用橙子草的Python自动化脚本~（https://github.com/Chinzicam/KeyMouse）'])
+    sheet.append(['指令类型（1 单击  2 双击  3 右键  4 输入  5 等待  6滚轮 7 判断 8 键盘键入）',
+                  '内容（图片名称.png、输入内容、等待时长/秒）', '重复次数(-1代表一直重复)'])
+    wb.save('orange.xlsx')
+
+# 检查并创建必要的文件和文件夹
+if not os.path.exists('keyMouse.ini'):
+    create_default_ini()
+
+if not os.path.exists('orange.xlsx'):
+    create_default_excel()
+
+if not os.path.exists('img'):
+    os.makedirs('img')
+
 # 读取配置文件
 config = configparser.ConfigParser()
 config.read('keyMouse.ini', encoding='utf-8')
@@ -127,7 +157,7 @@ def mainWork(sheet):
         time.sleep(timeDelay)  # 添加默认等待时间
 
 if __name__ == '__main__':
-    file = 'cmd.xlsx'  # 定义 Excel 文件名
+    file = 'orange.xlsx'  # 定义 Excel 文件名
     wb = openpyxl.load_workbook(filename=file)  # 加载 Excel 工作簿
     sheet = wb.active  # 获取活动工作表
     print('------------------------------~')
