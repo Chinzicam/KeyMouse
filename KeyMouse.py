@@ -13,6 +13,12 @@ config.read('keyMouse.ini', encoding='utf-8')
 timeDelay = config.getfloat('Settings', 'timeDelay')
 executionMode = config.getint('Settings', 'executionMode')
 
+# 如果是循环模式，读取循环次数
+if executionMode == 2:
+    loopCount = config.getint('Settings', 'loopCount')
+else:
+    loopCount = 1
+
 # 定义鼠标事件函数
 def mouseClick(clickTimes, lOrR, img, reTry):
     # 检查图像文件是否存在
@@ -50,10 +56,10 @@ def mouseClick(clickTimes, lOrR, img, reTry):
 # 数据检查函数，确保 Excel 中的数据有效
 def dataCheck(sheet):
     checkCmd = True
-    if sheet.max_row < 2:
+    if sheet.max_row < 3:
         print("没数据啊哥")
         checkCmd = False
-    for i in range(2, sheet.max_row + 1):
+    for i in range(3, sheet.max_row + 1):
         cmdType = sheet.cell(row=i, column=1).value
         if cmdType not in [1, 2, 3, 4, 5, 6, 7, 8]:  # 确保操作类型在允许的范围内
             print(f'第{i}行,第1列数据有毛病')
@@ -72,7 +78,7 @@ def dataCheck(sheet):
 
 # 主函数，执行从 Excel 中读取的任务
 def mainWork(sheet):
-    for i in range(2, sheet.max_row + 1):
+    for i in range(3, sheet.max_row + 1):
         cmdType = sheet.cell(row=i, column=1).value
         if cmdType == 1:
             img = 'img/' + sheet.cell(row=i, column=2).value
@@ -124,14 +130,16 @@ if __name__ == '__main__':
     file = 'cmd.xlsx'  # 定义 Excel 文件名
     wb = openpyxl.load_workbook(filename=file)  # 加载 Excel 工作簿
     sheet = wb.active  # 获取活动工作表
+    print('------------------------------~')
     print('欢迎使用橙子草的Python自动化脚本~')
+    print('------------------------------~')
     checkCmd = dataCheck(sheet)  # 检查数据有效性
     if checkCmd:
         if executionMode == 1:
             mainWork(sheet)  # 执行一次
         elif executionMode == 2:
-            while True:
-                mainWork(sheet)  # 不断循环执行
+            for _ in range(loopCount):
+                mainWork(sheet)  # 循环执行
                 time.sleep(0.1)
                 print("等待0.1秒")
     else:
