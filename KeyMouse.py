@@ -10,7 +10,7 @@ def create_default_ini():
     config = configparser.ConfigParser()
     config['Settings'] = {
         'timeDelay': '1',
-        'executionMode': '2',
+        'executionMode': '1',
         'loopCount': '2'
     }
     with open('keyMouse.ini', 'w', encoding='utf-8') as configfile:
