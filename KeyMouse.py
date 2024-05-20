@@ -12,7 +12,7 @@ def create_default_ini():
         'timeDelay': '1',
         'executionMode': '1',
         'loopCount': '2',
-        'excelFileName': 'orange.xlsx'  # 新增 Excel 文件名配置项
+        'excelFileName': 'orange.xlsx'  
     }
     with open('keyMouse.ini', 'w', encoding='utf-8') as configfile:
         config.write(configfile)
@@ -24,7 +24,22 @@ def create_default_excel(excel_file_name):
     sheet.append(['欢迎使用橙子草的Python自动化脚本~（https://github.com/Chinzicam/KeyMouse）'])
     sheet.append(['指令类型（1 单击  2 双击  3 右键  4 输入  5 等待  6滚轮 7 判断 8 键盘键入）',
                   '内容（图片名称.png、输入内容、等待时长/秒）', '重复次数(-1代表一直重复)'])
+    
+    # 创建数据行
+    data_rows = [
+        [8, 'win+r', 1],
+        [8, 'cmd', 1],
+        [8, 'enter', 1],
+        [4, '欢迎使用橙子草的Python自动化脚本~', 1]
+    ]
+
+    # 将数据行写入到表中，并确保数字以数字格式存储
+    for row in data_rows:
+        sheet.append(row)
+
     wb.save(excel_file_name)
+
+
 
 # 检查并创建必要的文件和文件夹
 if not os.path.exists('keyMouse.ini'):
@@ -37,7 +52,7 @@ config.read('keyMouse.ini', encoding='utf-8')
 # 获取配置项
 timeDelay = config.getfloat('Settings', 'timeDelay')
 executionMode = config.getint('Settings', 'executionMode')
-excelFileName = config.get('Settings', 'excelFileName')  # 读取 Excel 文件名
+excelFileName = config.get('Settings', 'excelFileName') 
 
 # 如果指定的 Excel 文件不存在，创建默认的 Excel 文件
 if not os.path.exists(excelFileName):
@@ -46,6 +61,37 @@ if not os.path.exists(excelFileName):
 # 如果 img 文件夹不存在，创建该文件夹
 if not os.path.exists('img'):
     os.makedirs('img')
+
+# 生成 "使用方法.txt" 文件
+def create_usage_file():
+    usage_content = """欢迎使用橙子草的Python自动化脚本
+使用方法
+文件结构：
+img文件夹：用于存放图片
+cmd.xlsx：用于配置操作脚本
+KeyMouse.py 或者 KeyMouse.exe：主文件
+
+如何运行:双击启动exe/运行以下代码
+python KeyMouse.py
+
+其他
+以下是一些功能8 常用键的名称，更多的键名称可以参考 pyautogui 的官方文档：
+字母键：'a', 'b', 'c', ..., 'z'
+数字键：'0', '1', '2', ..., '9'
+功能键：'f1', 'f2', ..., 'f12'
+箭头键：'left', 'right', 'up', 'down'
+控制键：'ctrl', 'alt', 'shift', 'win', 'cmd' (Mac OS)
+其他键：'enter', 'space', 'backspace', 'tab', 'esc', 'delete', 'home', 'end', 'pageup', 'pagedown'
+
+项目地址：https://github.com/Chinzicam/KeyMouse，欢迎star~
+"""
+    with open('使用方法.txt', 'w', encoding='utf-8') as f:
+        f.write(usage_content)
+
+# 如果 "使用方法.txt" 文件不存在，创建该文件
+if not os.path.exists('使用方法.txt'):
+    create_usage_file()
+
 
 # 如果是循环模式，读取循环次数
 if executionMode == 2:
