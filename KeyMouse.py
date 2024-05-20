@@ -3,10 +3,15 @@ import time  # 导入 time 库，用于控制时间延迟
 import openpyxl  # 导入 openpyxl 库，用于读取和写入 Excel 文件
 import pyperclip  # 导入 pyperclip 库，用于操作剪贴板
 import os  # 导入 os 库，用于文件和操作系统的交互
+import configparser  # 导入 configparser 库，用于读取配置文件
 
+# 读取配置文件
+config = configparser.ConfigParser()
+config.read('keyMouse.ini', encoding='utf-8')
 
-# 设置默认等待时间
-timeDelay = 1
+# 获取配置项
+timeDelay = config.getfloat('Settings', 'timeDelay')
+executionMode = config.getint('Settings', 'executionMode')
 
 # 定义鼠标事件函数
 def mouseClick(clickTimes, lOrR, img, reTry):
@@ -122,10 +127,9 @@ if __name__ == '__main__':
     print('欢迎使用橙子草的Python自动化脚本~')
     checkCmd = dataCheck(sheet)  # 检查数据有效性
     if checkCmd:
-        key = input('选择功能: 1.做一次 2.循环到死 \n')
-        if key == '1':
+        if executionMode == 1:
             mainWork(sheet)  # 执行一次
-        elif key == '2':
+        elif executionMode == 2:
             while True:
                 mainWork(sheet)  # 不断循环执行
                 time.sleep(0.1)
