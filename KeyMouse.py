@@ -11,7 +11,8 @@ def create_default_ini():
     config['Settings'] = {
         'timeDelay': '1',
         'executionMode': '1',
-        'loopCount': '2'
+        'loopCount': '2',
+        'excelFileName': 'orange.xlsx'  # 新增 Excel 文件名配置项
     }
     with open('keyMouse.ini', 'w', encoding='utf-8') as configfile:
         config.write(configfile)
@@ -42,6 +43,7 @@ config.read('keyMouse.ini', encoding='utf-8')
 # 获取配置项
 timeDelay = config.getfloat('Settings', 'timeDelay')
 executionMode = config.getint('Settings', 'executionMode')
+excelFileName = config.get('Settings', 'excelFileName')  # 读取 Excel 文件名
 
 # 如果是循环模式，读取循环次数
 if executionMode == 2:
@@ -65,8 +67,8 @@ def mouseClick(clickTimes, lOrR, img, reTry):
                 # 在找到的位置进行鼠标点击操作
                 pyautogui.click(location.x, location.y, clicks=clickTimes, interval=0.2, duration=0.2, button=lOrR)
                 break
-            print("未找到匹配图片,0.1秒后重试")
-            time.sleep(0.1)
+            print("未找到匹配图片,1秒后重试")
+            time.sleep(1)
     elif reTry == -1:
         while True:
             location = pyautogui.locateCenterOnScreen(img, confidence=0.9)
@@ -87,7 +89,7 @@ def mouseClick(clickTimes, lOrR, img, reTry):
 def dataCheck(sheet):
     checkCmd = True
     if sheet.max_row < 3:
-        print("没数据啊哥")
+        print("没数据！")
         checkCmd = False
     for i in range(3, sheet.max_row + 1):
         cmdType = sheet.cell(row=i, column=1).value
@@ -157,8 +159,7 @@ def mainWork(sheet):
         time.sleep(timeDelay)  # 添加默认等待时间
 
 if __name__ == '__main__':
-    file = 'orange.xlsx'  # 定义 Excel 文件名
-    wb = openpyxl.load_workbook(filename=file)  # 加载 Excel 工作簿
+    wb = openpyxl.load_workbook(filename=excelFileName)  # 加载 Excel 工作簿
     sheet = wb.active  # 获取活动工作表
     print('------------------------------~')
     print('欢迎使用橙子草的Python自动化脚本~')
@@ -170,7 +171,7 @@ if __name__ == '__main__':
         elif executionMode == 2:
             for _ in range(loopCount):
                 mainWork(sheet)  # 循环执行
-                time.sleep(0.1)
-                print("等待0.1秒")
+                time.sleep(1)
+                print("等待1秒")
     else:
         print('输入有误或者已经退出!')
