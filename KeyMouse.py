@@ -28,7 +28,7 @@ def create_default_excel(excel_file_name):
     # 创建数据行
     data_rows = [
         [8, 'win+r', 1],
-        [8, 'cmd', 1],
+        [4, 'cmd', 1],
         [8, 'enter', 1],
         [4, '欢迎使用橙子草的Python自动化脚本~', 1]
     ]
