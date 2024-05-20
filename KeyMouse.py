@@ -33,7 +33,6 @@ def create_default_excel(excel_file_name):
         [4, '欢迎使用橙子草的Python自动化脚本~', 1]
     ]
 
-    # 将数据行写入到表中，并确保数字以数字格式存储
     for row in data_rows:
         sheet.append(row)
 
@@ -106,18 +105,29 @@ def mouseClick(clickTimes, lOrR, img, reTry):
         print(f"文件 {img} 不存在，跳过该步骤")
         return
     
-    # 根据 reTry 参数的值决定不同的重试逻辑
-    if reTry == 1:
-        while True:
-            # 尝试找到屏幕上的图像位置
-            location = pyautogui.locateCenterOnScreen(img, confidence=0.9)
-            if location is not None:
-                # 在找到的位置进行鼠标点击操作
-                pyautogui.click(location.x, location.y, clicks=clickTimes, interval=0.2, duration=0.2, button=lOrR)
-                break
-            print("未找到匹配图片,1秒后重试")
-            time.sleep(1)
-    elif reTry == -1:
+# 定义鼠标事件函数
+def mouseClick(clickTimes, lOrR, img, reTry):
+    # 检查图像文件是否存在
+    if not os.path.exists(img):
+        print(f"文件 {img} 不存在，跳过该步骤")
+        return
+
+    # 最多重试3次逻辑
+    max_retries = 3
+    retry_count = 0
+
+    while retry_count < max_retries:
+        location = pyautogui.locateCenterOnScreen(img, confidence=0.9)
+        if location is not None:
+            pyautogui.click(location.x, location.y, clicks=clickTimes, interval=0.2, duration=0.2, button=lOrR)
+            break
+        print(f"未找到匹配图片, 1秒后重试 (第{retry_count + 1}次)")
+        retry_count += 1
+        time.sleep(1)
+    else:
+        print(f"未找到匹配图片，超过最大重试次数{max_retries}，跳过该步骤")
+
+    if reTry == -1:
         while True:
             location = pyautogui.locateCenterOnScreen(img, confidence=0.9)
             if location is not None:
@@ -132,6 +142,7 @@ def mouseClick(clickTimes, lOrR, img, reTry):
                 print("重复")
                 i += 1
             time.sleep(0.1)
+
 
 # 数据检查函数，确保 Excel 中的数据有效
 def dataCheck(sheet):
