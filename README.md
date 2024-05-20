@@ -8,7 +8,7 @@
 - cmd.xlsx：用于配置操作脚本
 - KeyMouse.py 或者 KeyMouse.exe：主文件
 
-### 如何运行:双击启动/运行以下代码
+### 如何运行:双击启动exe/运行以下代码
 
 ```py
 python KeyMouse.py
