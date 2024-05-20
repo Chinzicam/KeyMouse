@@ -18,23 +18,17 @@ def create_default_ini():
         config.write(configfile)
 
 # 创建默认的 orange.xlsx 文件
-def create_default_excel():
+def create_default_excel(excel_file_name):
     wb = openpyxl.Workbook()
     sheet = wb.active
     sheet.append(['欢迎使用橙子草的Python自动化脚本~（https://github.com/Chinzicam/KeyMouse）'])
     sheet.append(['指令类型（1 单击  2 双击  3 右键  4 输入  5 等待  6滚轮 7 判断 8 键盘键入）',
                   '内容（图片名称.png、输入内容、等待时长/秒）', '重复次数(-1代表一直重复)'])
-    wb.save('orange.xlsx')
+    wb.save(excel_file_name)
 
 # 检查并创建必要的文件和文件夹
 if not os.path.exists('keyMouse.ini'):
     create_default_ini()
-
-if not os.path.exists('orange.xlsx'):
-    create_default_excel()
-
-if not os.path.exists('img'):
-    os.makedirs('img')
 
 # 读取配置文件
 config = configparser.ConfigParser()
@@ -44,6 +38,14 @@ config.read('keyMouse.ini', encoding='utf-8')
 timeDelay = config.getfloat('Settings', 'timeDelay')
 executionMode = config.getint('Settings', 'executionMode')
 excelFileName = config.get('Settings', 'excelFileName')  # 读取 Excel 文件名
+
+# 如果指定的 Excel 文件不存在，创建默认的 Excel 文件
+if not os.path.exists(excelFileName):
+    create_default_excel(excelFileName)
+
+# 如果 img 文件夹不存在，创建该文件夹
+if not os.path.exists('img'):
+    os.makedirs('img')
 
 # 如果是循环模式，读取循环次数
 if executionMode == 2:
@@ -94,17 +96,17 @@ def dataCheck(sheet):
     for i in range(3, sheet.max_row + 1):
         cmdType = sheet.cell(row=i, column=1).value
         if cmdType not in [1, 2, 3, 4, 5, 6, 7, 8]:  # 确保操作类型在允许的范围内
-            print(f'第{i}行,第1列数据有毛病')
+            print(f'第{i}行,第1列数据有问题')
             checkCmd = False
         cmdValue = sheet.cell(row=i, column=2).value
         if cmdType in [1, 2, 3, 7, 8] and not isinstance(cmdValue, str):  # 确保特定类型的值是字符串
-            print(f'第{i}行,第2列数据有毛病')
+            print(f'第{i}行,第2列数据有问题')
             checkCmd = False
         if cmdType == 4 and not cmdValue:  # 确保类型4的值非空
-            print(f'第{i}行,第2列数据有毛病')
+            print(f'第{i}行,第2列数据有问题')
             checkCmd = False
         if cmdType in [5, 6] and not isinstance(cmdValue, (int, float)):  # 确保特定类型的值是数字
-            print(f'第{i}行,第2列数据有毛病')
+            print(f'第{i}行,第2列数据有问题')
             checkCmd = False
     return checkCmd
 

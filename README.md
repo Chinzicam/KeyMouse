@@ -10,6 +10,7 @@
 
 - img文件夹：用于存放图片
 - orange.xlsx：用于配置操作脚本
+- keyMouse.ini：配置文件
 - KeyMouse.py 或者 KeyMouse.exe：主文件
 
 ### 如何运行:双击启动exe/运行以下代码
