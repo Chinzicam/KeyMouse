@@ -9,7 +9,7 @@ import configparser  # 导入 configparser 库，用于读取配置文件
 def create_default_ini():
     config = configparser.ConfigParser()
     config['Settings'] = {
-        'timeDelay': '1',
+        'timeDelay': '0.8',
         'executionMode': '1',
         'loopCount': '2',
         'excelFileName': 'orange.xlsx'  
@@ -30,7 +30,9 @@ def create_default_excel(excel_file_name):
         [8, 'win+r', 1],
         [4, 'cmd', 1],
         [8, 'enter', 1],
-        [4, '欢迎使用橙子草的Python自动化脚本~', 1]
+        [4, '欢迎使用橙子草的Python自动化脚本~', 1],
+		[8, 'enter', 1],
+		[4, '用法请查看 使用方法.txt~', 1]
     ]
 
     for row in data_rows:
